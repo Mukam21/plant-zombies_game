@@ -52,11 +52,13 @@ var zombies3 []*GameObject
 
 var bullets []*GameObject
 
+// I will write about the features of this game and what I did in the comments.
+// But I don't think there's much need for explanation, because I've used all the function names to relate them to what I'm trying to do.
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	InitScreen()
 	InitGameState()
-	// Yourwin(score)
 
 	inputChan := InitUserInput()
 
@@ -65,14 +67,21 @@ func main() {
 		UpdateState()
 		DrawState()
 
+		// The speed of the game
 		time.Sleep(100 * time.Millisecond)
 	}
 
+	//I used everything that was shown during the game.
+	// And I used all of this to make the game fun and effective.
+
+	// I used these symbols to represent Zombies and Plants.
 	width, height := screen.Size()
 	PrintStringCentered(height/2-15, width/2-30, "🌵  Plants 🌻")
 	PrintStringCentered(height/2-15, width/2, "🛠  V/S ⚔")
 	PrintStringCentered(height/2-15, width/2+30, "👽  Zombies ☠")
 
+	// If it goes over 200, the Plants will win and the Zombies will lose.
+	// Thus, the game ends.
 	if score >= 200 {
 		PrintStringCentered(height/2, width/2, "Plants win!!!")
 		PrintStringCentered(height/2+1, width/2, fmt.Sprintf("You killed %d Zombies ", score))
@@ -87,6 +96,9 @@ func main() {
 		PrintStringCentered(height/2, width/2-67, "✅")
 		PrintStringCentered(height/2+5, width/2-67, "✅")
 		PrintStringCentered(height/2-5, width/2-67, "✅")
+
+		// On the other hand, if this number does not exceed 200, the Zombies will win and the Plants will lose.
+		// Thus, the game ends.
 	} else {
 		PrintStringCentered(height/2-15, width/2-50, "🥀")
 		PrintStringCentered(height/2, width/2, "Game Over!!!")
@@ -105,33 +117,33 @@ func main() {
 		PrintStringCentered(height/2-5, width/2+65, "✅")
 	}
 
+	// However, if the number is less than 100, the result is very low.
 	if score <= 100 {
 		PrintStringCentered(height/2-18, width/2-45, "😟")
 		PrintStringCentered(height/2-18, width/2-42, "😢")
 		PrintStringCentered(height/2-18, width/2-39, "🥵")
 		PrintStringCentered(height/2-17, width/2-40, fmt.Sprintf("You killed %d Zombies, that's too few!!!", score))
+
+		// But if the number is between 100 and 200, then it's fine.
 	} else if score > 100 && score < 200 {
 		PrintStringCentered(height/2-18, width/2-45, "🙂")
 		PrintStringCentered(height/2-18, width/2-42, "🙂")
 		PrintStringCentered(height/2-18, width/2-39, "🙂")
 		PrintStringCentered(height/2-17, width/2-40, fmt.Sprintf("You killed %d Zombies, that's good!!!", score))
+
+		// Also, if the number is 200 or more, that's great and you'll be the winner.
 	} else if score >= 200 {
 		PrintStringCentered(height/2-18, width/2-45, "😃")
 		PrintStringCentered(height/2-18, width/2-42, "😃")
 		PrintStringCentered(height/2-18, width/2-39, "😃")
 		PrintStringCentered(height/2-17, width/2-40, fmt.Sprintf("You killed %d Zombies, that's great!!!", score))
 	}
+
+	// These functions are designed to manage time after the game is over.
 	screen.Show()
 	time.Sleep(10 * time.Second)
 	screen.Fini()
 }
-
-// func Yourwin(score int) bool {
-// 	for score > 10 {
-// 		isGameOver = false
-// 	}
-// 	return true
-// }
 
 func InitGameState() {
 	player1 = &GameObject{
@@ -163,6 +175,8 @@ func InitScreen() {
 		os.Exit(1)
 	}
 	defStyle := tcell.StyleDefault.
+
+		// Thanks to these, we can use any color available in the Tcell library for the game.
 		Background(tcell.ColorGray).
 		Foreground(tcell.ColorGoldenrod)
 	screen.SetStyle(defStyle)
@@ -191,6 +205,8 @@ func ReadInput(inputChan chan string) string {
 	return key
 }
 
+// These are the keys on the keyboard user to control the main Plants.
+// We can choose the best places according to our own wishes.
 func HandleUserInput(key string) {
 	if key == "Rune[q]" {
 		screen.Fini()
@@ -230,21 +246,47 @@ func NovePlayer(player *GameObject, velRow, velCol int) {
 }
 
 func SplawnBullet(row, col int) {
-	bullets = append(bullets, &GameObject{
-		points: []*Point{
-			{row: row, col: col, symbol: '🍊'},
-		},
-		velRow: 0, velCol: 2,
-	})
+
+	// Not a very strong weapon
+	if score <= 100 {
+		bullets = append(bullets, &GameObject{
+			points: []*Point{
+				{row: row, col: col, symbol: '🍊'},
+			},
+			velRow: 0, velCol: 2,
+		})
+
+		//  A very strong weapon
+	} else if score > 100 {
+		bullets = append(bullets, &GameObject{
+			points: []*Point{
+				{row: row, col: col, symbol: '✴'},
+			},
+			velRow: 0, velCol: 4,
+		})
+	}
 }
 
 func SplawnBullet2(row, col int) {
-	bullets = append(bullets, &GameObject{
-		points: []*Point{
-			{row: row, col: col, symbol: '🌽'},
-		},
-		velRow: 0, velCol: 4,
-	})
+
+	// Not a very strong weapon
+	if score <= 100 {
+		bullets = append(bullets, &GameObject{
+			points: []*Point{
+				{row: row, col: col, symbol: '🌽'},
+			},
+			velRow: 0, velCol: 2,
+		})
+
+		// A very strong weapon
+	} else if score > 100 {
+		bullets = append(bullets, &GameObject{
+			points: []*Point{
+				{row: row, col: col, symbol: '☣'},
+			},
+			velRow: 0, velCol: 4,
+		})
+	}
 }
 
 func UpdateState() {
@@ -293,80 +335,202 @@ func MoveGameObjekts3(objs []*GameObject) {
 }
 
 func UpdateZombies() {
-	spawnChance := rand.Intn(200)
-	if spawnChance < 5 {
-		SpawnZombie()
+
+	// Easy game. Not many Zombies
+	if score <= 50 {
+		spawnChance := rand.Intn(150)
+		if spawnChance < 5 {
+			SpawnZombie()
+		}
+
+		//  Difficult game. Lots of zombies
+	} else if score > 50 && score <= 100 {
+		spawnChance := rand.Intn(100)
+		if spawnChance < 5 {
+			SpawnZombie()
+		}
+
+		// Very difficult game. Very a lot of zombies
+	} else if score > 100 {
+		spawnChance := rand.Intn(75)
+		if spawnChance < 5 {
+			SpawnZombie()
+		}
 	}
 }
 
 func SpawnZombie() {
-	originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
-	zombies = append(zombies, &GameObject{
-		points: []*Point{
-			{row: originRow, col: originCol, symbol: '😡'},
-			{row: originRow + 1, col: originCol, symbol: '👔'},
-			{row: originRow + 2, col: originCol + 1, symbol: '▓'},
-			{row: originRow + 3, col: originCol, symbol: '🚒'},
-			{row: originRow, col: originCol - 2, symbol: '⛏'},
-			{row: originRow, col: originCol + 2, symbol: '🏸'},
-			{row: originRow + 1, col: originCol - 1, symbol: '└'},
-		},
-		velRow: 0, velCol: -2,
-	})
+
+	// Slow Zombies
+	if score <= 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies = append(zombies, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '😡'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '🚒'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow, col: originCol + 2, symbol: '🏸'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -2,
+		})
+
+		// Fast Zombies
+	} else if score > 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies = append(zombies, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '😡'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '🚒'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow, col: originCol + 2, symbol: '🏸'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -3,
+		})
+	}
 }
 
 func UpdateZombies2() {
-	spawnChance2 := rand.Intn(200)
-	if spawnChance2 < 5 {
-		SpawnZombie2()
+
+	// Easy game. Not many Zombies
+	if score <= 50 {
+		spawnChance2 := rand.Intn(150)
+		if spawnChance2 < 5 {
+			SpawnZombie2()
+		}
+
+		//  Difficult game. Lots of zombies
+	} else if score > 50 && score <= 100 {
+		spawnChance2 := rand.Intn(100)
+		if spawnChance2 < 5 {
+			SpawnZombie2()
+		}
+
+		// Very difficult game. Very a lot of zombies
+	} else if score > 100 {
+		spawnChance2 := rand.Intn(75)
+		if spawnChance2 < 5 {
+			SpawnZombie2()
+		}
 	}
 }
 
 func SpawnZombie2() {
-	originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
-	zombies2 = append(zombies2, &GameObject{
-		points: []*Point{
-			{row: originRow, col: originCol, symbol: '😡'},
-			{row: originRow + 1, col: originCol, symbol: '👔'},
-			{row: originRow + 2, col: originCol + 1, symbol: '▓'},
-			{row: originRow + 3, col: originCol, symbol: '⛸'},
-			{row: originRow, col: originCol - 2, symbol: '⛏'},
-			{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
-			{row: originRow, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 1, col: originCol - 1, symbol: '└'},
-		},
-		velRow: 0, velCol: -1,
-		health: 2,
-	})
+
+	// Slow Zombies
+	if score <= 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies2 = append(zombies2, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '😡'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '⛸'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
+				{row: originRow, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -1,
+			health: 2,
+		})
+
+		// Fast Zombies
+	} else if score > 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies2 = append(zombies2, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '😡'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '⛸'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
+				{row: originRow, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -2,
+			health: 2,
+		})
+	}
 }
 
 func UpdateZombies3() {
-	spawnChance3 := rand.Intn(75)
-	if spawnChance3 < 5 {
-		SpawnZombie3()
+
+	// Easy game. Not many Zombies
+	if score <= 50 {
+		spawnChance3 := rand.Intn(100)
+		if spawnChance3 < 5 {
+			SpawnZombie3()
+		}
+
+		//  Difficult game. Lots of zombies
+	} else if score > 50 && score <= 100 {
+		spawnChance3 := rand.Intn(80)
+		if spawnChance3 < 5 {
+			SpawnZombie3()
+		}
+
+		// Very difficult game. Very a lot of zombies
+	} else if score > 100 {
+		spawnChance3 := rand.Intn(50)
+		if spawnChance3 < 5 {
+			SpawnZombie3()
+		}
 	}
 }
 
 func SpawnZombie3() {
-	originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
-	zombies3 = append(zombies3, &GameObject{
-		points: []*Point{
-			{row: originRow, col: originCol, symbol: '🎃'},
-			{row: originRow + 1, col: originCol, symbol: '👔'},
-			{row: originRow + 2, col: originCol + 1, symbol: '▓'},
-			{row: originRow + 3, col: originCol, symbol: '⛸'},
-			{row: originRow, col: originCol - 2, symbol: '⛏'},
-			{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
-			{row: originRow, col: originCol - 4, symbol: '🚪'},
-			{row: originRow + 1, col: originCol - 1, symbol: '└'},
-		},
-		velRow: 0, velCol: -1,
-		health: 3,
-	})
+
+	// Slow Zombies
+	if score <= 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies3 = append(zombies3, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '🎃'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '⛸'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
+				{row: originRow, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -1,
+			health: 3,
+		})
+
+		// Fast Zombies
+	} else if score > 100 {
+		originRow, originCol := rand.Intn(GameFrameHeight-3), GameFrameWidth-2
+		zombies3 = append(zombies3, &GameObject{
+			points: []*Point{
+				{row: originRow, col: originCol, symbol: '🎃'},
+				{row: originRow + 1, col: originCol, symbol: '👔'},
+				{row: originRow + 2, col: originCol + 1, symbol: '▓'},
+				{row: originRow + 3, col: originCol, symbol: '⛸'},
+				{row: originRow, col: originCol - 2, symbol: '⛏'},
+				{row: originRow + 2, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 3, col: originCol - 4, symbol: '🚪'},
+				{row: originRow, col: originCol - 4, symbol: '🚪'},
+				{row: originRow + 1, col: originCol - 1, symbol: '└'},
+			},
+			velRow: 0, velCol: -2,
+			health: 3,
+		})
+	}
 }
 
 func CollisionDetection() {
